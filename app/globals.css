@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-bone text-ink font-sans;
+  }
+
+  ::selection {
+    background-color: rgba(200, 96, 40, 0.18);
+  }
+}
+
+@layer utilities {
+  /* Thin clay underline used to mark the recommended world. */
+  .clay-underline {
+    background-image: linear-gradient(to right, #c86028, #c86028);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 2px;
+  }
+}
