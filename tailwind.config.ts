@@ -14,6 +14,10 @@ const config: Config = {
         charcoal: "#1B2128",
         saffron: "#E0A23C",
         stone: "#8A857C",
+        // Dark gallery shell
+        canvas: "#0A0E0D", // near-black page background
+        panel: "#141A19", // raised panel/card surface
+        line: "#2A302E", // hairline borders on dark
       },
       fontFamily: {
         serif: ["var(--font-serif)", "Georgia", "serif"],
@@ -21,8 +25,9 @@ const config: Config = {
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       boxShadow: {
-        card: "0 1px 2px rgba(14,20,19,0.04), 0 8px 24px rgba(14,20,19,0.06)",
+        card: "0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35)",
         spotlight: "0 0 0 1px rgba(224,162,60,0.15), 0 18px 50px rgba(0,0,0,0.45)",
+        glow: "0 0 0 1px rgba(224,162,60,0.25), 0 10px 40px rgba(224,162,60,0.08)",
       },
       borderRadius: {
         xl2: "1.25rem",

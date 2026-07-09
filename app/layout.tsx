@@ -17,7 +17,7 @@ const sans = Inter({
 export const metadata: Metadata = {
   title: "AQLUMA Prompt Engine",
   description:
-    "Turn a piece of content into three art-directed Nano Banana 2 image prompts — one per AQLUMA world.",
+    "Turn a piece of content into art-directed image prompts — the AQLUMA way.",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
-      <body className="min-h-screen bg-bone text-ink antialiased">
+      <body className="gallery-bg min-h-screen text-bone antialiased">
         {children}
       </body>
     </html>

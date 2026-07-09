@@ -1,4 +1,4 @@
-import type { Format, GenerateResult, Slide, WorldId } from "./types";
+import type { Format, GenerateResult, Persona, Slide, WorldId } from "./types";
 
 const WORLD_IDS: WorldId[] = ["briefing", "studio", "musee"];
 const FORMATS: Format[] = ["Static", "Carousel"];
@@ -25,6 +25,38 @@ function isSlide(v: unknown): v is Slide {
   if (typeof v !== "object" || v === null) return false;
   const s = v as Record<string, unknown>;
   return typeof s.imagePrompt === "string" && typeof s.textSpace === "string";
+}
+
+function isPersona(v: unknown): v is Persona {
+  if (typeof v !== "object" || v === null) return false;
+  const p = v as Record<string, unknown>;
+  return (
+    typeof p.name === "string" &&
+    typeof p.age === "string" &&
+    typeof p.role === "string" &&
+    typeof p.physicalDescription === "string" &&
+    typeof p.wardrobe === "string"
+  );
+}
+
+const PERSONA_TOKEN = /\{\{PERSONA:([^}]+)\}\}/g;
+
+// Deterministically substitute {{PERSONA:<name>}} tokens with that persona's fixed
+// physicalDescription + wardrobe. We do this in code rather than trusting the model to
+// copy prose verbatim across slides — LLMs reliably paraphrase repeated descriptions,
+// which silently breaks visual consistency across a carousel.
+function resolvePersonaTokens(slides: Slide[], personas: Persona[] | undefined): Slide[] {
+  if (!personas || personas.length === 0) return slides;
+  const byName = new Map(personas.map((p) => [p.name.trim(), p]));
+
+  return slides.map((slide) => ({
+    ...slide,
+    imagePrompt: slide.imagePrompt.replace(PERSONA_TOKEN, (match, rawName: string) => {
+      const persona = byName.get(rawName.trim());
+      if (!persona) return "the person"; // unknown name — degrade gracefully, no raw token leaks
+      return `${persona.physicalDescription}, wearing ${persona.wardrobe}`;
+    }),
+  }));
 }
 
 // Parse + validate the model output. Throws a friendly Error on any problem.
@@ -66,9 +98,28 @@ export function parseGenerateResult(raw: string): GenerateResult {
   const format = obj.format as Format;
   let slides = obj.slides as Slide[];
 
-  // Static must be a single image — keep only the first if the model overshoots.
+  // Static is a single image, unless the user asked for alternative takes
+  // (variations) — cap at 3 to guard against a runaway response.
   if (format === "Static") {
-    slides = slides.slice(0, 1);
+    slides = slides.slice(0, 3);
+  }
+
+  let personas: Persona[] | undefined;
+  if (Array.isArray(obj.personas)) {
+    // Defend against the model occasionally writing the {{PERSONA:name}} token into
+    // the persona's own description fields instead of real prose (it should only ever
+    // appear inside imagePrompt) — strip any stray token so the Cast sheet and the
+    // substitution below never surface raw placeholder syntax.
+    const stripToken = (s: string) => s.replace(PERSONA_TOKEN, "").trim();
+    const cleaned = obj.personas
+      .filter(isPersona)
+      .map((p) => ({
+        ...p,
+        physicalDescription: stripToken(p.physicalDescription),
+        wardrobe: stripToken(p.wardrobe),
+      }))
+      .filter((p) => p.physicalDescription.length > 0 && p.wardrobe.length > 0);
+    personas = cleaned.length > 0 ? cleaned : undefined;
   }
 
   return {
@@ -76,6 +127,7 @@ export function parseGenerateResult(raw: string): GenerateResult {
     world: obj.world as WorldId,
     format,
     note: typeof obj.note === "string" ? obj.note : undefined,
-    slides,
+    slides: resolvePersonaTokens(slides, personas),
+    personas,
   };
 }
