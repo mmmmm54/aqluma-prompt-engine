@@ -80,7 +80,7 @@ export interface GenerateResult {
   personas?: Persona[]; // only present when named personas were requested
 }
 
-export type Platform = "Instagram" | "LinkedIn" | "Both";
+export type Platform = "Instagram" | "LinkedIn" | "Facebook" | "Both";
 export type Goal = "Trust" | "Educate" | "Promote" | "Engage";
 export type Audience = "Parents" | "Students" | "Both";
 

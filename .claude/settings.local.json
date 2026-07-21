@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npm *)",
+      "Bash(curl -s http://localhost:3000/calendar)",
+      "Bash(awk 'NR==16,NR==276' lib/prompt.ts)",
+      "Read(//tmp/**)"
+    ]
+  }
+}

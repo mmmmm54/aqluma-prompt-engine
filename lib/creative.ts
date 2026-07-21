@@ -49,6 +49,14 @@ export const TECHNIQUES: string[] = [
   "Speak through negative space — the cutout, the hole, the missing volume in a full shelf",
   "Stack translucency — the idea legible only when layered sheets align",
   "Interrupt an inventory — sorted piles, and one item that fits no pile",
+  "Literalise the abstract word — build the idiom as a real object (\"a gap in the story\" as an actual physical gap left in an otherwise complete row)",
+  "Visual pun via material substitution — swap in the exact material the idea is about, so the object becomes the argument (a burnt object for excess heat, a hollow one for missing substance, a seedless one for absence)",
+  "Fuse cause with effect in one object — the crack and the force that made it implied by the same shape",
+  "Use scale itself as the metaphor — the same object miniaturised or monumentalised until size alone tells the story",
+  "Two near-identical objects, one revealed correct by a single visible tell (weight, colour, temperature, wear) the other lacks",
+  "Let the object complete or fail an expected pattern — a puzzle, a sequence, a set — as the entire metaphor, no caption needed",
+  "Give the idea a temperature — frost, condensation, or heat-warp as the only signal of what happened",
+  "Make the invisible audible — a sound-producing object frozen at the exact instant of its sound",
 ];
 
 // 2) FRESH HERO OBJECTS — educational / knowledge, far beyond the tired list.
@@ -115,6 +123,58 @@ export const HERO_EDUCATIONAL: string[] = [
   "essay drafts numbered v1 to v7, the top one finally clean",
   "a shorthand notebook, its symbols like a private code",
   "an atlas fallen open at the one well-travelled page, the spine broken exactly there",
+];
+
+// 2b) NON-PAPER HERO OBJECTS — deliberately OUTSIDE the stationery/notebook/paper
+//    domain, because that domain became this brand's most overused reflex. Spans
+//    glass & liquid, textile, food, mechanical/scientific instruments, natural
+//    materials, light devices, music, and small precious objects. Just as valid
+//    a hero family as the educational list above — sometimes sharper, especially
+//    for abstract ideas (verification, bias, doubt, completeness, speed).
+export const HERO_NON_PAPER: string[] = [
+  "a glass spirit-level vial, its bubble frozen exactly off-centre",
+  "a decanter mid-pour, the stream caught as a solid glass thread",
+  "a prism splitting one beam of light into a spectrum, one colour band missing",
+  "an inkwell of clear water beside one of true ink, both catching the same light",
+  "a single ice cube melting on a warm brass tray, the puddle shaped like a question mark",
+  "a perfume bottle's glass stopper resting apart from its bottle, scent long gone",
+  "a single loose thread pulled from a tightly woven cloth, the weave beginning to gape",
+  "an embroidery hoop with the pattern half-finished, needle still through the last stitch",
+  "a tailor's measuring tape coiled into a perfect spiral, one end frayed",
+  "a patch sewn over a tear, the stitching visible and unapologetic",
+  "a knitted swatch that changes gauge halfway, the tension visibly shifting",
+  "a spool of thread unspooling in an impossibly taut straight line",
+  "a pomegranate split open, seeds spilling in a precise, countable row",
+  "a lump of sugar dissolving mid-drop into dark tea, the plume caught mid-swirl",
+  "a citrus peeled in one unbroken spiral, resting coiled beside the fruit",
+  "salt poured into the exact shape of a fingerprint on dark stone",
+  "a loaf of bread torn rather than cut, the crumb structure exposed like a cross-section",
+  "a single olive on a fork, oil pooling in a perfect ring beneath it",
+  "a vintage barometer needle caught exactly between « clair » and « orage »",
+  "a brass sextant aimed at nothing, its mirror catching an empty patch of light",
+  "a tuning fork struck and humming, beside one gone silent and bent",
+  "iron filings arranged by a hidden magnet into a pattern that shouldn't be possible",
+  "a stethoscope resting on a block of stone, listening for a heartbeat that isn't there",
+  "a weather vane frozen mid-spin, pointing confidently at the wrong direction",
+  "nesting wooden dolls opened in a row, the smallest one missing",
+  "a music box with its mechanism exposed, the comb missing one tooth",
+  "a single dry leaf pressed under glass, its veins lit from behind",
+  "a geode cracked open, one half rough stone and one half crystal light",
+  "a river stone split clean by frost, both halves still touching at one edge",
+  "a beeswax honeycomb fragment, one cell capped and one left open",
+  "a single feather with its barbs deliberately unzipped on one side",
+  "a fossil ammonite, its spiral interrupted by one flattened facet",
+  "a magic-lantern slide projecting a faded image onto rising smoke",
+  "a pinhole camera obscura box, the inverted image visible on its inner wall",
+  "a candle behind a paper cutout, the cast shadow telling a different story than the object",
+  "a sundial gnomon casting a shadow onto a dial with no markings",
+  "a metronome arm frozen at the exact edge of its swing",
+  "a single piano key removed from its bed, resting beside the keyboard",
+  "a violin string snapped, curling away from the bridge",
+  "a phonograph needle lifted just before the run-out groove",
+  "a pocket watch case open, both hands stopped at a different time from each other",
+  "a signet ring pressed into wax, the impression slightly smudged",
+  "a single pearl broken free from its strand, rolling toward the table's edge",
 ];
 
 // 3) MATERIAL & STATE MODIFIERS — make any object feel fresh via its condition.
@@ -295,10 +355,13 @@ function sample<T>(arr: readonly T[], n: number): T[] {
 // How the hero-object pool is weighted per world (see the Fable creative brief:
 // Musée favours conceptual/wildcard + dark states; Briefing favours warm,
 // domestic, Moroccan-memory objects; Studio favours process objects & tools).
-const WORLD_MIX: Record<WorldId, { educational: number; wildcard: number; moroccan: number }> = {
-  briefing: { educational: 3, wildcard: 1, moroccan: 3 },
-  studio: { educational: 4, wildcard: 2, moroccan: 2 },
-  musee: { educational: 2, wildcard: 4, moroccan: 1 },
+const WORLD_MIX: Record<
+  WorldId,
+  { educational: number; wildcard: number; moroccan: number; nonPaper: number }
+> = {
+  briefing: { educational: 2, wildcard: 1, moroccan: 2, nonPaper: 2 },
+  studio: { educational: 2, wildcard: 2, moroccan: 1, nonPaper: 3 },
+  musee: { educational: 1, wildcard: 3, moroccan: 1, nonPaper: 3 },
 };
 
 function bullet(items: string[]): string {
@@ -317,6 +380,7 @@ export function buildCreativeSeed(world: WorldId, format: Format): string {
     ...sample(HERO_EDUCATIONAL, mix.educational + heroBoost),
     ...sample(WILDCARD, mix.wildcard + (heroBoost ? 1 : 0)),
     ...sample(MOROCCAN_DEEP_CUTS, mix.moroccan),
+    ...sample(HERO_NON_PAPER, mix.nonPaper + (heroBoost ? 2 : 0)),
   ], 999); // re-shuffle the merged pool so categories interleave
 
   const techniques = sample(TECHNIQUES, 3);
@@ -331,6 +395,13 @@ export function buildCreativeSeed(world: WorldId, format: Format): string {
     `invent BEYOND it. The hero object must still be earned from the content's one core`,
     `idea (apply the golden test). Every generation you receive a different kit — never`,
     `fall back to loh / abacus / compass / hourglass / plain slate out of habit.`,
+    ``,
+    `PAPER/NOTEBOOK IS NOT THE DEFAULT: blank paper, notebooks, cahiers, books, and`,
+    `magnifying glasses have become this brand's most overused reflex — several of the`,
+    `hero sparks below are deliberately from a completely different material world`,
+    `(glass, textile, food, mechanical instrument, natural element, light device, music,`,
+    `small precious object). Give those genuinely equal weight; across a set of posts,`,
+    `a paper/stationery hero should be the exception, not the pattern.`,
     ``,
     `Metaphor techniques to try (a lens for inventing the hero, not an object):`,
     bullet(techniques),

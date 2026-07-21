@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Wizard from "@/components/wizard/Wizard";
 import ResultView from "@/components/ResultView";
 import {
@@ -136,9 +137,25 @@ export default function Home() {
   return (
     <main className="mx-auto max-w-5xl px-5 py-12 sm:px-8 sm:py-16">
       <header className="mb-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-saffron">
-          AQLUMA
-        </p>
+        <div className="mb-2 flex items-center justify-between gap-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-saffron">
+            AQLUMA
+          </p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/lead-magnet"
+              className="text-xs font-medium text-stone transition hover:text-bone"
+            >
+              Lead Magnet PDF →
+            </Link>
+            <Link
+              href="/calendar"
+              className="text-xs font-medium text-stone transition hover:text-bone"
+            >
+              Content Calendar →
+            </Link>
+          </div>
+        </div>
         <h1 className="font-serif text-3xl leading-tight text-bone sm:text-4xl">
           Prompt Engine
         </h1>
